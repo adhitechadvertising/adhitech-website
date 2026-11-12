@@ -5,13 +5,12 @@ export default function CustomCursor() {
   const [ringPosition, setRingPosition] = useState({ x: -100, y: -100 });
   const [isActive, setIsActive] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(() => window.matchMedia('(pointer: fine)').matches);
 
   // Only enable the custom cursor on devices that actually have a fine
   // pointer (mouse/trackpad). Touch devices should never render this.
   useEffect(() => {
     const mq = window.matchMedia('(pointer: fine)');
-    setEnabled(mq.matches);
     const handleChange = (e) => setEnabled(e.matches);
     mq.addEventListener('change', handleChange);
     return () => mq.removeEventListener('change', handleChange);

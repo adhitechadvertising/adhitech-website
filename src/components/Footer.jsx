@@ -1,54 +1,11 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock, ArrowRight, Instagram, Linkedin, Facebook, Youtube, Check, Copy } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { companyInfo } from '../data/company';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [quoteState, setQuoteState] = useState('idle'); // idle | sent
-  const [submittedEmail, setSubmittedEmail] = useState('');
-  const [copied, setCopied] = useState(false);
-
-  const quoteMailtoHref = (email) => {
-    const subject = encodeURIComponent('Project Quote Request');
-    const body = encodeURIComponent(
-      `Hello Adhitech team,\n\nI'd like to request a quote. Here's my contact email: ${email || '[your email]'}\n\nProject details:\n`
-    );
-    return `mailto:${companyInfo.contact.email}?subject=${subject}&body=${body}`;
-  };
-
-  const handleQuoteRequest = (e) => {
-    e.preventDefault();
-    const email = e.target.elements.quoteEmail.value;
-    setSubmittedEmail(email);
-    setQuoteState('sent');
-    // Attempt to open the visitor's email client. This can fail silently if
-    // none is configured, which is why we always show a visible fallback
-    // below rather than relying on this alone.
-    window.location.href = quoteMailtoHref(email);
-  };
-
-  const handleCopyEmail = () => {
-    navigator.clipboard?.writeText(companyInfo.contact.email).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  const getSocialIcon = (platform) => {
-    switch (platform.toLowerCase()) {
-      case 'instagram':
-        return <Instagram size={18} />;
-      case 'linkedin':
-        return <Linkedin size={18} />;
-      case 'facebook':
-        return <Facebook size={18} />;
-      case 'youtube':
-        return <Youtube size={18} />;
-      default:
-        return null;
-    }
-  };
+  const whatsappNumber = companyInfo.contact.phone.split(',')[0].replace(/\D/g, '');
+  const quoteWhatsApp = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hello Adhitech, I would like to discuss a signage quotation. I can share my drawings and project details.')}`;
 
   return (
     <footer 
@@ -94,33 +51,9 @@ export default function Footer() {
               alt="Adhitech Advertising Technology"
               style={{ height: '56px', width: 'auto', maxWidth: '100%', display: 'block', alignSelf: 'flex-start', objectFit: 'contain' }}
             />
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6', maxWidth: '320px' }}>
-              {companyInfo.description.substring(0, 140).replace(/\s+\S*$/, '')}…
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6', maxWidth: '380px' }}>
+              {companyInfo.description}
             </p>
-            <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>
-              {companyInfo.socials.map((social) => (
-                <a 
-                  key={social.platform} 
-                  href={social.url}
-                  className="social-btn"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    color: 'var(--text-secondary)',
-                    transition: 'var(--transition-smooth)'
-                  }}
-                  aria-label={social.platform}
-                >
-                  {getSocialIcon(social.platform)}
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -153,7 +86,7 @@ export default function Footer() {
                 <span>{companyInfo.contact.address}</span>
               </a>
               <a
-                href={`tel:${companyInfo.contact.phone.replace(/[^+\d]/g, '')}`}
+                href={`tel:${companyInfo.contact.phone.split(',')[0].replace(/[^+\d]/g, '')}`}
                 className="footer-link"
                 style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', color: 'var(--text-secondary)' }}
               >
@@ -180,122 +113,21 @@ export default function Footer() {
             <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.05rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-primary)' }}>
               Request A Quote
             </h4>
-            {quoteState === 'idle' ? (
-              <>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>
-                  Share your email and we'll open a message to our project team to get things moving.
-                </p>
-                <form onSubmit={handleQuoteRequest} style={{ display: 'flex', position: 'relative' }}>
-                  <input 
-                    type="email" 
-                    name="quoteEmail"
-                    placeholder="Enter your email" 
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '0.9rem 3.5rem 0.9rem 1.2rem',
-                      backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      borderRadius: '4px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.9rem',
-                      outline: 'none',
-                      transition: 'var(--transition-smooth)'
-                    }}
-                    className="newsletter-input"
-                  />
-                  <button 
-                    type="submit" 
-                    style={{
-                      position: 'absolute',
-                      right: '4px',
-                      top: '4px',
-                      bottom: '4px',
-                      width: '42px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'var(--accent)',
-                      border: 'none',
-                      borderRadius: '4px',
-                      color: '#FFFFFF',
-                      cursor: 'pointer',
-                      transition: 'var(--transition-smooth)'
-                    }}
-                    className="newsletter-btn"
-                    aria-label="Request a quote"
-                  >
-                    <ArrowRight size={18} />
-                  </button>
-                </form>
-              </>
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.8rem',
-                  padding: '1rem 1.2rem',
-                  backgroundColor: 'rgba(212, 0, 0, 0.05)',
-                  border: '1px solid rgba(212, 0, 0, 0.2)',
-                  borderRadius: '6px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 600 }}>
-                  <Check size={16} style={{ color: 'var(--accent)' }} />
-                  We've opened your email app
-                </div>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>
-                  If nothing opened (common if you don't have a default email app set up), just email or call us directly:
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-                  <a
-                    href={quoteMailtoHref(submittedEmail)}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      fontSize: '0.82rem', color: 'var(--text-primary)',
-                      border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px',
-                      padding: '0.5rem 0.8rem'
-                    }}
-                    className="footer-link"
-                  >
-                    <Mail size={14} style={{ color: 'var(--accent)' }} /> {companyInfo.contact.email}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleCopyEmail}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      fontSize: '0.82rem', color: 'var(--text-secondary)',
-                      border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px',
-                      padding: '0.5rem 0.8rem', background: 'transparent', cursor: 'pointer'
-                    }}
-                  >
-                    {copied ? <Check size={14} style={{ color: 'var(--accent)' }} /> : <Copy size={14} />}
-                    {copied ? 'Copied' : 'Copy email'}
-                  </button>
-                  <a
-                    href={`tel:${companyInfo.contact.phone.replace(/[^+\d]/g, '')}`}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      fontSize: '0.82rem', color: 'var(--text-secondary)',
-                      border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px',
-                      padding: '0.5rem 0.8rem'
-                    }}
-                    className="footer-link"
-                  >
-                    <Phone size={14} style={{ color: 'var(--accent)' }} /> Call us
-                  </a>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setQuoteState('idle')}
-                  style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.78rem', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-                >
-                  Send another request
-                </button>
-              </div>
-            )}
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>
+              Send your drawings, dimensions or project brief directly to our team for a quotation discussion.
+            </p>
+            <a
+              href={quoteWhatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-whatsapp-cta"
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', padding: '0.85rem 1rem', borderRadius: '4px', background: 'var(--accent)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', width: 'fit-content' }}
+            >
+              <MessageCircle size={17} /> Request a quote on WhatsApp
+            </a>
+            <a href={`mailto:${companyInfo.contact.email}`} style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              Or email {companyInfo.contact.email}
+            </a>
           </div>
         </div>
 
@@ -314,8 +146,8 @@ export default function Footer() {
         >
           <p>© {currentYear} Adhitech Advertising Technology Pvt. Ltd. All rights reserved.</p>
           <div style={{ display: 'flex', gap: '2rem' }}>
-            <a href="#" className="footer-bottom-link">Privacy Policy</a>
-            <a href="#" className="footer-bottom-link">Terms of Service</a>
+            <Link to="/privacy-policy" className="footer-bottom-link">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="footer-bottom-link">Terms of Service</Link>
           </div>
         </div>
       </div>
@@ -327,20 +159,6 @@ export default function Footer() {
         }
         .footer-bottom-link:hover {
           color: var(--text-primary);
-        }
-        .social-btn:hover {
-          background-color: var(--accent) !important;
-          border-color: var(--accent) !important;
-          color: #FFFFFF !important;
-          box-shadow: 0 0 15px rgba(212, 0, 0, 0.3);
-        }
-        .newsletter-input:focus {
-          border-color: var(--accent) !important;
-          box-shadow: 0 0 15px rgba(212, 0, 0, 0.1);
-        }
-        .newsletter-btn:hover {
-          background-color: #A00000;
-          box-shadow: 0 0 10px rgba(212, 0, 0, 0.5);
         }
         
         @media (max-width: 991px) {

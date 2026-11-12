@@ -42,6 +42,7 @@ export default function MediaLightbox({ items, index, onClose, onChange, label }
   return (
     <div
       className="lb-overlay"
+      data-lenis-prevent
       role="dialog"
       aria-modal="true"
       aria-label={label}

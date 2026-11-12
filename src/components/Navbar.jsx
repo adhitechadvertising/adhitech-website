@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
-import { companyInfo } from '../data/company';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  // The mobile menu is tied to the page it was opened on, so it closes by itself on any navigation.
+  const [openKey, setOpenKey] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const isOpen = openKey === location.key;
+  const setIsOpen = (open) => setOpenKey(open ? location.key : null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,16 +23,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
   // Lock body scroll while the mobile drawer is open, and allow Escape to close it
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'Escape') setOpenKey(null);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -180,7 +177,7 @@ export default function Navbar() {
 
           {/* Quick CTA */}
           <Link 
-            to="/projects"
+            to="/b2b"
             style={{
               marginLeft: '1rem',
               display: 'inline-flex',
@@ -199,7 +196,7 @@ export default function Navbar() {
             }}
             className="nav-cta-btn"
           >
-            View Work
+            B2B Enquiry
             <ArrowUpRight size={14} style={{ color: 'var(--accent)' }} />
           </Link>
         </div>
@@ -242,6 +239,7 @@ export default function Navbar() {
           borderLeft: '1px solid rgba(212, 0, 0, 0.1)'
         }}
         className="mobile-drawer"
+        inert={!isOpen}
       >
         <button 
           onClick={() => setIsOpen(false)}

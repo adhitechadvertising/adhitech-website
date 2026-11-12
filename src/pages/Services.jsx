@@ -3,6 +3,7 @@ import { Sparkles, Type, Layout, Cpu, Scissors, Layers, Fingerprint, Briefcase, 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { services } from '../data/services';
+import PageMeta from '../components/PageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,7 +73,9 @@ export default function Services() {
   };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', overflow: 'hidden', paddingTop: '140px' }}>
+    <>
+      <PageMeta title="Signage & CNC Manufacturing Services | Adhitech" description="Explore Adhitech's Liquid Acrylic LED signage, channel letters, ACP signage, CNC routing, laser cutting, bending and fabrication services in Jaipur." path="/services" />
+      <div ref={containerRef} style={{ position: 'relative', overflow: 'hidden', paddingTop: '140px' }}>
       <div className="bg-grid-overlay" />
       <div className="bg-radial-glow" />
 
@@ -296,5 +299,6 @@ export default function Services() {
         }
       `}</style>
     </div>
+    </>
   );
 }

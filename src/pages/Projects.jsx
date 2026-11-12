@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Play } from 'lucide-react';
 import { galleryCategories } from '../data/gallery';
 import MediaLightbox from '../components/MediaLightbox';
+import PageMeta from '../components/PageMeta';
 
 const countLabel = (items) => {
   const photos = items.filter((i) => i.type === 'image').length;
@@ -45,6 +46,9 @@ export default function Projects() {
   };
 
   return (
+    <>
+      <PageMeta title="Signage Manufacturing Projects | Adhitech" description="View Adhitech signage, Liquid Acrylic LED letter, corporate branding, CNC cutting and fabrication project work." path="/projects" />
+
     <div style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
       <div className="bg-grid-overlay" />
       <div className="bg-radial-glow" />
@@ -180,5 +184,6 @@ export default function Projects() {
         }
       `}</style>
     </div>
+    </>
   );
 }

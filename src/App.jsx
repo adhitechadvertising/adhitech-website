@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Services from './pages/Services';
 import Projects from './pages/Projects';
 import B2B from './pages/B2B';
+import { PrivacyPolicy, TermsOfService } from './pages/Legal';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,14 @@ function ScrollManager() {
 
   useEffect(() => {
     if (hash) {
-      const element = document.querySelector(hash);
+      let element = null;
+      try {
+        element = document.querySelector(hash);
+      } catch {
+        element = null;
+      }
+      // B2B tab links such as /b2b#rental have no element of their own: scroll to the tools section.
+      if (!element && pathname === '/b2b') element = document.getElementById('b2b-tools');
       if (element) {
         setTimeout(() => {
           element.scrollIntoView({ behavior: 'smooth' });
@@ -35,10 +43,9 @@ function ScrollManager() {
 }
 
 export default function App() {
-  const location = useLocation();
-
   useEffect(() => {
-    // Initialize Lenis smooth scroll
+    // Smooth scroll. Lenis is driven by GSAP's ticker (one loop only) and
+    // ScrollTrigger is kept in sync with it.
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth easeOutExpo
@@ -47,25 +54,14 @@ export default function App() {
       touchMultiplier: 1.5,
     });
 
-    // Request animation frame for Lenis
-    let rafId;
-    function raf(time) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
-    // Synchronize ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update);
-    
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    
+
+    const tick = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(tick);
       lenis.destroy();
     };
   }, []);
@@ -82,6 +78,8 @@ export default function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/b2b" element={<B2B />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
         </Routes>
       </main>
 

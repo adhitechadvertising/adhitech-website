@@ -3,10 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, ShieldCheck, Zap, Factory, Sparkles } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { companyInfo } from '../data/company';
 import { services } from '../data/services';
 import { galleryCategories } from '../data/gallery';
 import MagneticButton from '../components/MagneticButton';
+import PageMeta from '../components/PageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,19 +17,16 @@ export default function Home() {
   const subheadlineRef = useRef(null);
   const ctaRef = useRef(null);
   const introRef = useRef(null);
-  const statsRef = useRef(null);
   const setupRef = useRef(null);
   const liquidRef = useRef(null);
 
   // Only offer the heavier video backdrop on larger viewports so mobile
   // visitors get a fast, static hero instead of a big autoplaying download.
-  const [useHeroVideo, setUseHeroVideo] = useState(false);
-
-  useEffect(() => {
-    const mqWide = window.matchMedia('(min-width: 900px)');
-    const mqMotion = window.matchMedia('(prefers-reduced-motion: no-preference)');
-    setUseHeroVideo(mqWide.matches && mqMotion.matches);
-  }, []);
+  const [useHeroVideo] = useState(
+    () =>
+      window.matchMedia('(min-width: 900px)').matches &&
+      window.matchMedia('(prefers-reduced-motion: no-preference)').matches
+  );
 
   useEffect(() => {
     // Hero Animations
@@ -76,26 +73,6 @@ export default function Home() {
         }
       }
     );
-
-    // Stats counter animation
-    const statsElements = statsRef.current.querySelectorAll('.stat-number');
-    statsElements.forEach((el) => {
-      const target = parseInt(el.getAttribute('data-target'), 10);
-      const counter = { val: 0 };
-      
-      gsap.to(counter, {
-        val: target,
-        duration: 2.5,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: statsRef.current,
-          start: 'top 85%'
-        },
-        onUpdate: () => {
-          el.innerText = Math.floor(counter.val) + (target === 8 ? '' : '+');
-        }
-      });
-    });
 
     // Liquid Acrylic feature section reveal
     if (liquidRef.current) {
@@ -159,11 +136,12 @@ export default function Home() {
     { title: "Liquid Acrylic Signage Setup", desc: "Full in-house production with channel bending & UV casting", img: "/assets/factory_acrylic_fabrication.jpg" },
     { title: "Laser Welding + Fabrication", desc: "High-strength precision seam welding & assembly line", img: "/assets/factory_welding_fabrication.jpg" },
     { title: "CO2 Laser Cutting", desc: "Fast acrylic profiling & MDF detailing", img: "/assets/factory_co2_laser.jpg" },
-    { title: "Heavy Structural Signage", desc: "Fabrication of highway unipoles, massive pylons & 50ft+ LED structures", img: "/gallery/mega/mega-04.jpg" }
+    { title: "Heavy Structural Signage", desc: "Fabrication of structural signage and large-format installations", img: "/assets/heavy_structural_signage.png" }
   ];
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <PageMeta title="Adhitech | Liquid Acrylic LED Signage & Channel Letter Manufacturer" description="Adhitech is a Jaipur-based signage manufacturer producing Liquid Acrylic LED letters, channel letters, corporate signage and CNC-fabricated components for brands and trade customers." />
       <div className="bg-grid-overlay" />
       <div className="bg-radial-glow" />
 
@@ -237,22 +215,22 @@ export default function Home() {
         </div>
 
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <div style={{ maxWidth: '900px' }}>
+          <div style={{ maxWidth: '1150px' }}>
             <div style={{ marginBottom: '1.5rem' }}>
               <span className="section-tag">Premium Signage Manufacturing · Jaipur, Rajasthan</span>
             </div>
-            <h1 
+            <h1
               ref={headlineRef}
               style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-                lineHeight: '1.1',
-                marginBottom: '1.5rem',
+                fontSize: 'clamp(1.9rem, 3.9vw, 3.6rem)',
+                lineHeight: '1.15',
+                marginBottom: '1.75rem',
                 fontFamily: 'var(--font-title)',
-                fontWeight: 900
+                fontWeight: 800
               }}
-              className="text-gradient-red"
             >
-              Premium LED Signage & CNC Manufacturing
+              <span style={{ display: 'block', color: '#fff' }}>From Idea to Finished Product.</span>
+              <span style={{ display: 'block', color: 'var(--accent-hover)' }}>Engineered &amp; Manufactured In-House.</span>
             </h1>
             <p 
               ref={subheadlineRef}
@@ -260,11 +238,11 @@ export default function Home() {
                 fontSize: 'clamp(1rem, 2vw, 1.4rem)',
                 color: 'var(--text-secondary)',
                 lineHeight: '1.6',
-                marginBottom: '3rem',
+                marginBottom: '2.25rem',
                 maxWidth: '650px'
               }}
             >
-              {companyInfo.subTagline}
+              Liquid Acrylic LED letters, signboards and CNC work, built in our own factory. Whether you run a shop, a brand or a sign-making business, send us a drawing or an idea and get a finished sign.
             </p>
             <div 
               ref={ctaRef}
@@ -274,16 +252,11 @@ export default function Home() {
                 flexWrap: 'wrap'
               }}
             >
-              <MagneticButton 
-                onClick={() => navigate('/projects')}
-                className="solid"
-              >
-                View Projects
+              <MagneticButton onClick={handleContactScroll} className="solid">
+                Get a Quote
               </MagneticButton>
-              <MagneticButton 
-                onClick={handleContactScroll}
-              >
-                Contact Us
+              <MagneticButton onClick={() => navigate('/b2b')}>
+                For Sign Makers &amp; Trade
               </MagneticButton>
             </div>
           </div>
@@ -408,16 +381,16 @@ export default function Home() {
               }}
             >
               <span style={{ fontSize: '0.85rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
-                Pioneers of LED Signage
+                Liquid Acrylic LED Manufacturing
               </span>
               <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: '1.1' }}>
-                We Build Branding That Commands Presence
+                Manufacturing Support for Every Signage Requirement
               </h2>
               <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '1.05rem' }}>
-                {companyInfo.description}
+                Adhitech is a signage and fabrication manufacturer based in Jaipur, Rajasthan. We produce Liquid Acrylic LED letters, channel letters, corporate signage and custom-fabricated components, supported by in-house CNC, laser cutting, bending and 3D printing capabilities.
               </p>
               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
-                As one of the first manufacturers in Rajasthan using Liquid Acrylic Technology, we construct seamless 3D lettering and corporate monolithic gantries that represent the highest standards of signage precision.
+                We work with corporate customers as well as signage businesses that need a dependable production partner for individual projects, repeat orders or batch manufacturing.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
                 <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
@@ -426,14 +399,45 @@ export default function Home() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                   <ShieldCheck size={18} style={{ color: 'var(--accent)' }} />
-                  <span>100% weather-resistant high luminance materials</span>
+                  <span>Material and lighting options selected for the project</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                   <Zap size={18} style={{ color: 'var(--accent)' }} />
-                  <span>Rajasthan's first dedicated Liquid Acrylic Curing plant</span>
+                  <span>In-house Liquid Acrylic processing and UV curing</span>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Two customer paths: corporate projects and trade manufacturing */}
+      <section className="home-audience-section">
+        <div className="container">
+          <div className="home-audience-heading">
+            <span className="section-tag">Who we work with</span>
+            <h2>One manufacturing facility. Two ways to work with us.</h2>
+            <p>Whether you need a finished signage project or a production partner behind your own business, start with the right team.</p>
+          </div>
+          <div className="home-audience-grid">
+            <article className="home-audience-card">
+              <img src="/assets/project_liquid_acrylic_hotel.jpg" alt="Completed Liquid Acrylic LED signage project" loading="lazy" />
+              <div className="home-audience-copy">
+                <span>For brands & businesses</span>
+                <h3>Corporate Signage Projects</h3>
+                <p>LED letters, complete sign boards, ACP signage and custom branding projects—from manufacturing to installation coordination.</p>
+                <Link to="/projects">Explore our projects <ArrowRight size={16} /></Link>
+              </div>
+            </article>
+            <article className="home-audience-card">
+              <img src="/assets/factory_acrylic_fabrication.jpg" alt="In-house Liquid Acrylic signage manufacturing" loading="lazy" />
+              <div className="home-audience-copy">
+                <span>For sign makers & fabricators</span>
+                <h3>B2B Manufacturing Partner</h3>
+                <p>Outsource Liquid Acrylic and channel-letter production, share drawings for quotations, and discuss repeat or batch requirements.</p>
+                <Link to="/b2b">Explore B2B manufacturing <ArrowRight size={16} /></Link>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -563,57 +567,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      {/* Statistics Section */}
-      <section 
-        ref={statsRef}
-        style={{
-          padding: '6rem 0',
-          backgroundColor: '#0F0F0F',
-          borderTop: '1px solid rgba(255,255,255,0.03)',
-          borderBottom: '1px solid rgba(255,255,255,0.03)',
-          position: 'relative',
-          zIndex: 2
-        }}
-      >
-        <div className="container">
-          <div 
-            className="stats-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '2rem',
-              textAlign: 'center'
-            }}
-          >
-            {companyInfo.stats.map((stat, idx) => (
-              <div 
-                key={idx}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem'
-                }}
-              >
-                <span 
-                  className="stat-number text-gradient-red"
-                  data-target={stat.value.replace('+', '')}
-                  style={{
-                    fontFamily: 'var(--font-title)',
-                    fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                    fontWeight: 900
-                  }}
-                >
-                  0
-                </span>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Featured Projects Section */}
       <section 
@@ -933,10 +886,10 @@ export default function Home() {
 
             <div style={{ maxWidth: '650px', position: 'relative', zIndex: 1 }} className="cta-left">
               <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', lineHeight: '1.2', marginBottom: '1.2rem' }}>
-                Ready to elevate your corporate presence?
+                Have a signage project or production requirement?
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.6' }}>
-                Work with Rajasthan's premier signage engineering firm. Connect with our technical experts to finalize drawings and get a custom quote.
+                Share your drawings, specifications or project brief. Our team will help you review the requirement and prepare a quotation.
               </p>
             </div>
 
